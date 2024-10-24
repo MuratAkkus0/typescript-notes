@@ -5,7 +5,7 @@ import { add } from './core/operations/addition';
 import { subtract } from './core/operations/subtraction';
 
 // Selecting DOM Elements
-const calculaterScreen: HTMLDivElement = document.querySelector('.calculator__screen')!;
+const calculatorScreen: HTMLDivElement = document.querySelector('.calculator__screen')!;
 const numberBtnsContainer: HTMLDivElement = document.querySelector(".calculator__numbers")!;
 const operatorBtnsContainer: HTMLDivElement = document.querySelector(".calculator__operators")!;
 
@@ -13,41 +13,39 @@ const operatorBtnsContainer: HTMLDivElement = document.querySelector(".calculato
 let isFirstClick: boolean = true;
 
 const addEventListeners = (): void => {
-    const operatorBtns = document.querySelectorAll(".calculator__operator") as NodeListOf<HTMLDivElement>;
-    const numberBtns = document.querySelectorAll(".calculator__number") as NodeListOf<HTMLDivElement>;
-    const delBtn = document.querySelector('.del__btn') as HTMLDivElement;
-    const refBtn = document.querySelector('.refresh__btn') as HTMLDivElement;
-    const equalBtn = document.querySelector('.calculator__equal') as HTMLDivElement;
+    const operatorBtns: NodeListOf<HTMLDivElement> = document.querySelectorAll(".calculator__operator");
+    const numberBtns: NodeListOf<HTMLDivElement> = document.querySelectorAll(".calculator__number");
+    const delBtn: HTMLDivElement = document.querySelector('.del__btn')!;
+    const refBtn: HTMLDivElement = document.querySelector('.refresh__btn')!;
+    const equalBtn: HTMLDivElement = document.querySelector('.calculator__equal')!;
 
-    numberBtns.forEach((item) => item.addEventListener('click', getBtnValue))
-    operatorBtns.forEach((item) => item.addEventListener('click', getBtnValue))
+    numberBtns.forEach(item => item.addEventListener('click', getBtnValue))
+    operatorBtns.forEach(item => item.addEventListener('click', getBtnValue))
     refBtn.addEventListener('click', refreshCalculator);
     delBtn.addEventListener('click', delNumber);
     equalBtn.addEventListener('click', inputControl);
 }
 
 const getBtnValue = (e: MouseEvent): void => {
-    let value = e.target as HTMLElement;
+    const value = e.target as HTMLElement;
     if (value.classList.contains('calculator__number') && isFirstClick) {
-        calculaterScreen.innerHTML = '';
+        calculatorScreen.innerHTML = '';
         isFirstClick = false;
     }
     if (value.classList.contains('calculator__operator')) {
-        let screenText: string = calculaterScreen.innerHTML;
-        let lastChar: string = screenText.split("")[screenText.length - 1] || "";
+        let screenText: string = calculatorScreen.innerHTML;
+        let lastChar: string = screenText[screenText.length - 1] || ""; // string e de dizide oldugu gibi karakterin sirasini verip erisebilirsin.
 
         if (isNaN(Number(lastChar))) {
-            let textLength: number = screenText.length;
-            screenText = screenText.substring(0, textLength - 1)
-            calculaterScreen.innerHTML = screenText;
+            screenText = screenText.slice(0, -1);
+            calculatorScreen.innerHTML = screenText;
         }
     }
-    let btn = e.target as HTMLElement;
-    calculaterScreen.innerHTML += btn.innerText;
+    calculatorScreen.innerHTML += value.innerText;
 }
 
 const setNumberBtns = (): void => {
-    for (let i: number = 9; i >= 0; i--) {
+    for (let i = 9; i >= 0; i--) {
         numberBtnsContainer.innerHTML += `
         <div class="calculator__number input__btn">${i}</div>`
     }
@@ -55,61 +53,56 @@ const setNumberBtns = (): void => {
 }
 
 const setOperatorBtns = (): void => {
-    let MathOperatorsValues: Array<string> = [...Object.values(MathOperators)];
-    let index: number = MathOperatorsValues.indexOf('*');
-    MathOperatorsValues.splice(index, 1, 'x');
-    for (let i in MathOperatorsValues) {
+    // map methodu mevcut arraydaki her elemani ilgili fonksiyonun return u ile degistirir.
+    const MathOperatorsValues: Array<string> = Object.values(MathOperators).map(op => op === '*' ? 'x' : op);
+    MathOperatorsValues.forEach((operator)=>{
         operatorBtnsContainer.innerHTML += `
-        <div class="calculator__operator input__btn">${MathOperatorsValues[i]}</div>
+        <div class="calculator__operator input__btn">${operator}</div>
         `
-    }
+    })
 }
 
 const refreshCalculator = (): void => {
-    calculaterScreen.innerHTML = "0";
+    calculatorScreen.innerHTML = "0";
     isFirstClick = true;
 }
 
 const delNumber = (): void => {
-    let textLength: number = calculaterScreen.innerHTML.length;
+    let textLength: number = calculatorScreen.innerHTML.length;
     if (textLength > 1) {
-        calculaterScreen.innerHTML = calculaterScreen.innerHTML.substring(0, textLength - 1)
+        calculatorScreen.innerHTML = calculatorScreen.innerHTML.substring(0, textLength - 1)
     } else {
         refreshCalculator();
     }
 }
 
 const inputControl = (): void => {
-    const screenElement = document.querySelector('.calculator__screen') as HTMLDivElement;
-    const currentInput: string = screenElement.innerHTML;
-    let result: string = '';
-    let arr: Array<string> = currentInput.split("");
-    result = currentInput;
-    if (['x', '/'].includes(currentInput.charAt(0))) {
-        arr.splice(0, 1);
-        result = arr.join("");
-        calculaterScreen.innerHTML = result;
+    // const screenElement = document.querySelector('.calculator__screen') as HTMLDivElement;
+    const currentInput: string[] = calculatorScreen.innerHTML.split("");
+    let result: string[] = [...currentInput];
+    if (['x', '/'].includes(result[0])) {
+        result.shift();
+        calculatorScreen.innerHTML = result.join('');
     }
-    if (isNaN(Number(currentInput.charAt(currentInput.length - 1)))) {
-        arr.splice(currentInput.length - 1, 1);
-        result = arr.join("");
-        calculaterScreen.innerHTML = result;
+    const lastChar = result[result.length-1];
+    if (isNaN(Number(lastChar))) {
+        result.pop();
+        calculatorScreen.innerHTML = result.join('');
     }
-    result = result.replace('x', '*');
-    Calculator(result);
+    const formattedInput = result.join('').replace('x','*');
+    Calculator(formattedInput);
 }
 
 const Calculator = (input: string): void => {
-    let output: string = "";
-    let CalcMemberArray: CalculationMember[] = getCalculationMembers(input);
+    let calcMembers: CalculationMember[] = getCalculationMembers(input);
 
-    setPriority(CalcMemberArray);
-    Calculation(CalcMemberArray);
+    setPriority(calcMembers);
+    Calculation(calcMembers);
 
-    while (CalcMemberArray.length > 1) {
-        let operator: string = CalcMemberArray[1].value;
-        let firstNumber: number = Number(CalcMemberArray[0].value);
-        let secondNumber: number = Number(CalcMemberArray[2].value);
+    while (calcMembers.length > 1) {
+        let operator: string = calcMembers[1].value;
+        let firstNumber: number = Number(calcMembers[0].value);
+        let secondNumber: number = Number(calcMembers[2].value);
 
         let result: number = 0;
         switch (operator) {
@@ -121,18 +114,16 @@ const Calculator = (input: string): void => {
                 break;
         }
 
-        CalcMemberArray.splice(0, 3, {
+        calcMembers.splice(0, 3, {
             id: 0,
             value: result.toString(),
             type: MemberType.Number,
             hasPriority: false
         });
     }
-    if (CalcMemberArray.length === 1) {
-        output = CalcMemberArray[0].value
+    if (calcMembers.length === 1) {
+        calculatorScreen.innerHTML = calcMembers[0].value;
     }
-
-    calculaterScreen.innerHTML = output;
 }
 
 let mainControl = (): void => {
