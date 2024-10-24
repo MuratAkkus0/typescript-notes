@@ -1,4 +1,4 @@
-export enum MathOperators{
+export enum MathOperators {
     Addition = "+",
     Subtraction = "-",
     Multiplication = "*",

@@ -1,18 +1,25 @@
 {
-    "compilerOptions": {
-      "target": "es6",           // ES6 veya daha yeni bir sürüm
-      "module": "commonjs",      // Modül sistemi
-      "lib": ["es6", "dom"],     // Kullanılacak kütüphaneler
-      "strict": true,            // Sıkı tip kontrolü
-      "esModuleInterop": true,   // ES modül uyumluluğu
-      "skipLibCheck": true,      // Kütüphane kontrolünü atla
-      "forceConsistentCasingInFileNames": true // Dosya isimlendirme tutarlılığı
-    },
-    "include": [
-      "./src/**/*.ts"              // .ts dosyalarının bulunduğu dizin
-    ],
-    "exclude": [
-      "node_modules"             // node_modules dizinini hariç tut
-    ]
-  }
-  
+  "compilerOptions": {
+    "target": "ES2016",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+    "outDir":"build",
+
+    /* Bundler mode */
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["src"]
+}

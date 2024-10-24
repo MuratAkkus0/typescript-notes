@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./public/css/styles.css" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <title>Calculater</title>
+</head>
+
+<body>
+  <main>
+    <div class="calculator__container">
+      <div class="calculator__screen-container">
+        <div class="calculator__screen"></div>
+      </div>
+
+      <div class="calculator__input-container">
+        <div class="calculator__numbers">
+          <div class="signature input__btn ">
+            Moebel.de
+          </div>
+          <div class="calculator__comma input__btn calculator__operator">,</div>
+          <div class="calculator__equal input__btn">=</div>
+
+          <div class="calculator__operator refresh__btn input__btn">C</div>
+        </div>
+        <div class="calculator__operators">
+          <div class="calculator__operator del__btn input__btn"><i class="fa-solid fa-delete-left"></i></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script type="module" src="./src/index.ts"></script>
+</body>
+
+</html>
